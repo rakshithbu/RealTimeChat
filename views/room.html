@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{roomName}}</title>
+    <link rel="stylesheet" href="/css/room.css">
+
+</head>
+<body>
+<div class="rm-container">
+    <h1 class="rm-title">ChatCAT</h1>
+    <div class="rm-userbox">
+        <img src="{{user.profilePic}}" class="userPic">
+        <h3 class="userName">{{user.fullName}}| <a href="/logout">Logout</a><a href="/chatRoom">More Topics</a></h3>
+    </div>
+    <div class="rm-roomname">
+        <h5>{{roomName}}</h5>
+    </div>
+    <div class="rm-messages">
+        <ul class="messages">
+
+        </ul>
+    </div>
+    <div class="rm-users">
+        <ul class="users">
+
+        </ul>
+    </div>
+    <div class="rm-newmessage">
+        <input type="text" class="newmessage" autocomplete="off" placeholder="Type in your message and press enter !">
+
+    </div>
+</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    $(function () {
+        var host = '{{configs.host}}';
+
+        var socket = io.connect(host + "/messages");
+        var roomNumber = '{{roomNumber}}';
+        var userName = '{{user.fullName}}';
+        var userPic = '{{user.profilePic}}'
+
+        socket.on('connect', function () {
+            console.log("connection established");
+            socket.emit('joinRoom', {userName: userName, roomNumber: roomNumber, userPic: userPic});
+        });
+
+
+        $(document).on('keyup', '.newmessage', (e) => {
+            if (e.which === 13) {
+                if ($('.newmessage').val() != '') {
+                    socket.emit('newMessage', {
+                        roomNumber: roomNumber,
+                        userName: userName,
+                        userPic: userPic,
+                        message: $('.newmessage').val()
+                    });
+                    updateMessage(userPic, $('.newmessage').val());
+                }
+                $('.newmessage').val('');
+            }
+        });
+
+        socket.on('messageFeed', (data) => {
+            var msgs = JSON.parse(data);
+            updateMessage(msgs.userPic, msgs.message);
+        });
+
+        function updateMessage(userPic, message) {
+            console.log(message);
+
+            var html = '<li>';
+            html += '<div class="msgbox">';
+            html += '<div class="pic"> <img src="' + userPic + '"></div>';
+            html += ' <div class="msg"><p>' + message + '</p></div>';
+            html += '</div>';
+            html += '</li>'
+            $(html).hide().prependTo($('.messages')).slideDown(100);
+        }
+    });
+
+    
+
+
+</script>
+</html>

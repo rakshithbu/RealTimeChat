@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Realtime Chat</title>
+    <link rel="stylesheet" href="../css/chatroom.css">
+</head>
+<body>
+<div class="cr-container">
+    <h1 class="cr-title">Realtime Chat</h1>
+    <div class="cr-userbox">
+        <img src="{{user.profilePic}}" class="userPic">
+        <h3 class="userName">{{user.fullName}} | <a href="/logout">Logout</a></h3>
+    </div>
+    <div class="cr-newroom">
+        <input type="text" class="newRoom" autocomplete="off">
+        <button id="create">Create Topics</button>
+    </div>
+    <div class="cr-roomlist">
+        <ul class="roomlist">
+        </ul>
+    </div>
+</div>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    $(function () {
+        var host = '{{configs.host}}';
+
+        var socket = io.connect(host + "/roomList");
+
+        socket.on('connect', function () {
+            console.log("connection established");
+        });
+
+        $(document).on("click","#create", () => {
+            var roomName = $('.newRoom').val();
+            if (roomName != '') {
+                var roomNumber = parseInt(Math.random() * 1000)
+                socket.emit('newRoom', {roomName: roomName, roomNumber: roomNumber});
+                $('.newRoom').val('');
+            }
+        });
+
+        socket.on('roomUpdate', function (data) {
+            var processedData = JSON.parse(data);
+
+            for (let i = 0; i < processedData.length; i++) {
+                var str = '<a href="/room/' + processedData[i].roomNumber +'/'+processedData[i].roomName+'"> <li>' + processedData[i].roomName+'</li></a>';
+                $('.roomlist').prepend(str);
+            }
+        });
+
+    });
+</script>
+</html>
