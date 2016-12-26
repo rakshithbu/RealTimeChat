@@ -1,9 +1,9 @@
 {
-  "dbURL": "mongodb://user:user@ds141128.mlab.com:41128/realtimechat",
+  "dbURL": "", /*your mongolab db url*/
   "sessionSecret": "realtimechat",
   "fb": {
-    "appId": 734459820069257,
-    "appSecret": "ec629fddae7a3ac6900aabbfa96c3731",
+    "appId": "", /*you facebook app ID*/
+    "appSecret": "", /*your facebook app secret key*/
     "callbackURL": "http://localhost:3000/auth/facebook/callback"
   },
   "host": "http://localhost:3000"
