@@ -1,9 +1,9 @@
 {
-  "dbURL": "", /*your mongolab db url*/
+  "dbURL": "", //your mongolab db url
   "sessionSecret": "realtimechat",
   "fb": {
-    "appId": "", /*you facebook app ID*/
-    "appSecret": "", /*your facebook app secret key*/
+    "appId": "", //you facebook app ID
+    "appSecret": "", //your facebook app secret key
     "callbackURL": "http://localhost:3000/auth/facebook/callback"
   },
   "host": "http://localhost:3000"
